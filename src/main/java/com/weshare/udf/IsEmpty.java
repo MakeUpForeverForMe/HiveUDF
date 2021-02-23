@@ -9,30 +9,31 @@ import org.apache.hadoop.hive.ql.exec.UDF;
  * @author ximing.wei
  */
 @Description(
-    name = "is_empty",
-    value = "_FUNC_(PRIMITIVE primitive [, String string || Integer int])",
-    extended = "" +
-        "Example:\n" +
-        "  SELECT _FUNC_(null) as t;\n" +
-        "    null\n" +
-        "  SELECT _FUNC_('null', 0) as t;\n" +
-        "    0\n" +
-        "  SELECT _FUNC_('aa') as t;\n" +
-        "    aa\n"
+        name = "is_empty",
+        value = "_FUNC_(Object object [, String string || Integer int])\n{'',null,'null','nil','na','n/a','\\n'}",
+        extended = "" +
+                "Example:\n" +
+                "  SELECT _FUNC_('null', '') as t;\n" +
+                "    null"
 )
 public class IsEmpty extends UDF {
-  public String evaluate(String string) {
-    if (EmptyUtil.isEmpty(string)) return null;
-    return string;
-  }
+    public String evaluate(String string) {
+        if (EmptyUtil.isEmpty(string)) return null;
+        return String.valueOf(string);
+    }
 
-  public String evaluate(String string, String defaultValue) {
-    if (EmptyUtil.isEmpty(string)) return defaultValue;
-    return string;
-  }
+    public String evaluate(String string, String defaultValue) {
+        if (EmptyUtil.isEmpty(string)) return evaluate(defaultValue);
+        return String.valueOf(string);
+    }
 
-  public String evaluate(String string, int defaultValue) {
-    if (EmptyUtil.isEmpty(string)) return String.valueOf(defaultValue);
-    return string;
-  }
+    public String evaluate(String string, int defaultValue) {
+        if (EmptyUtil.isEmpty(string)) return String.valueOf(defaultValue);
+        return String.valueOf(string);
+    }
+
+    public String evaluate(String string, Integer defaultValue) {
+        if (EmptyUtil.isEmpty(string)) return String.valueOf(defaultValue);
+        return String.valueOf(string);
+    }
 }

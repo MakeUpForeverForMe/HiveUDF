@@ -1,26 +1,28 @@
 package com.weshare.utils;
 
-import org.apache.hadoop.hive.ql.metadata.HiveException;
-import org.apache.hadoop.hive.ql.udf.generic.GenericUDF.DeferredObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ximing.wei
  */
 public class EmptyUtil {
-  public static boolean isEmpty(String string) {
-    return string == null ||
-        string.trim().isEmpty() ||
-        string.isEmpty() ||
-        "null".equals(string.toLowerCase()) ||
-        "na".equals(string.toLowerCase());
-  }
+    private final static int defV = 0;
+    private final static int mapV = 1;
+    private static Map<String, Integer> map = new HashMap<>();
 
-  public static boolean isEmpty(DeferredObject string) throws HiveException {
-    return string == null ||
-        string.get() == null ||
-        string.get().toString().isEmpty() ||
-        string.get().toString().trim().isEmpty() ||
-        "null".equals(string.get().toString().toLowerCase()) ||
-        "na".equals(string.get().toString().toLowerCase());
-  }
+    static {
+        map.put("", mapV);
+        map.put("null", mapV);
+        map.put("nil", mapV);
+        map.put("na", mapV);
+        map.put("n/a", mapV);
+        map.put("\\n", mapV);
+    }
+
+    public static boolean isEmpty(Object object) {
+        if (object == null || "".equals(object)) return true;
+        if ("String".equals(object.getClass().getSimpleName())) return map.getOrDefault(((String) object).trim().toLowerCase(), defV) == mapV;
+        return false;
+    }
 }
